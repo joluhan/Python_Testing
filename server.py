@@ -80,7 +80,7 @@ def create_app(test_config=None):
         clubPoints = int(club['points'])  # Current points of the club.
 
         # Calculate the cost of the requested places.
-        cost = placesRequired * 3  # Assuming 1 place costs 3 points.
+        cost = placesRequired
 
         # Check if the number of places required exceeds the maximum allowed booking limit of 12 places.
         if placesRequired > 12:

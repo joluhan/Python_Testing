@@ -6,11 +6,24 @@
 </head>
 <body>
     <h1>Welcome to the GUDLFT Registration Portal!</h1>
+    <!-- Section for displaying any flash messages from the Flask application -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                <!-- Loop through each message and display it in the list -->
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <!-- Prompt for the user to enter their email -->
     Please enter your secretary email to continue:
-    <form action="showSummary" method="post"> <!-- Creates a form that will send data to the server using the POST method when submitted. The data will be sent to the "showSummary" endpoint. -->
-        <label for="email">Email:</label> <!-- Defines a label for the email input field for better accessibility. -->
-        <input type="email" name="email" id=""/> <!-- Creates an input field designed for email addresses. The browser can validate the input to ensure it's formatted as an email address. -->
-        <button type="submit">Enter</button> <!-- Creates a button that submits the form data to the server. -->
+    <!-- Form for email submission -->
+    <form action="showSummary" method="post">
+        <label for="email">Email:</label> <!-- Label for the email input field -->
+        <input type="email" name="email" id="email"/> <!-- Email input field that validates the input -->
+        <button type="submit">Enter</button> <!-- Button to submit the form -->
     </form>
 </body>
 </html>

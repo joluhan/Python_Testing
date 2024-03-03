@@ -72,7 +72,6 @@ def create_app(test_config=None):
             competition = [c for c in competitions if c['name'] == request.form['competition']][0]
             club = [c for c in clubs if c['name'] == request.form['club']][0]
         except IndexError:
-            # If not found, flash an error message and redirect.
             flash('Something went wrong - booking could not be completed.')
             return redirect(url_for('index'))
 
@@ -80,28 +79,34 @@ def create_app(test_config=None):
         placesAvailable = int(competition['numberOfPlaces'])  # Available places in the competition.
         clubPoints = int(club['points'])  # Current points of the club.
 
-        # Check if the club has enough points (assuming 1 place = 3 points).
-        if placesRequired * 3 > clubPoints:
-            flash('Not enough points')
+        # Calculate the cost of the requested places.
+        cost = placesRequired * 3  # Assuming 1 place costs 3 points.
+
+        # Check if the club has enough points.
+        if cost > clubPoints:
+            flash('Not enough points to book the required number of places.')
             return redirect(url_for('book', competition=competition['name'], club=club['name']))
 
         # Check if there are enough places available in the competition.
         if placesRequired > placesAvailable:
-            flash('Not enough places available')
+            flash('Not enough places available in the competition.')
             return redirect(url_for('book', competition=competition['name'], club=club['name']))
 
-        # Update competition places and club points.
+        # Deduct the points from the club's total and update competition places.
+        club['points'] = str(clubPoints - cost)
         competition['numberOfPlaces'] = str(placesAvailable - placesRequired)
-        club['points'] = str(clubPoints - (placesRequired * 3))
 
-        # Get the number of places required from form data.
-        placesRequired = int(request.form['places'])
-        # Subtract the required places from competition's available places.
-        competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
-        # Show success message and redirect back to the welcome page with updated data.
+        # Save the updated club points back to the clubs.json file.
+        with open('clubs.json', 'w') as c:
+            json.dump({'clubs': clubs}, c, indent=2)
+
+        # Save the updated competition places back to the competitions.json file.
+        with open('competitions.json', 'w') as comps:
+            json.dump({'competitions': competitions}, comps, indent=2)
 
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
+
 
     # Define the route for logout.
     @app.route('/logout')

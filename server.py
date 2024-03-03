@@ -20,31 +20,74 @@ def loadCompetitions():
         # Return the list of competitions.
         return listOfCompetitions
 
-# Initialize a Flask application instance.
-app = Flask(__name__)
-# Set a secret key for session management and flash messages.
-app.secret_key = 'something_special'
+def create_app():
+    # Initialize a Flask application instance.
+    app = Flask(__name__)
+    # Set a secret key for session management and flash messages.
+    app.secret_key = 'something_special'
 
-# Load competitions and clubs data into variables.
-competitions = loadCompetitions()
-clubs = loadClubs()
+    # Load competitions and clubs data into variables.
+    competitions = loadCompetitions()
+    clubs = loadClubs()
 
-# Define the route for the index page.
-@app.route('/')
-def index():
-    # Return the index.html template.
-    return render_template('index.html')
+    # Define the route for the index page.
+    @app.route('/')
+    def index():
+        # Return the index.html template.
+        return render_template('index.html')
 
-# Define the route for showing summary after a POST request.
-@app.route('/showSummary', methods=['POST'])
-def showSummary():
-    try:
-        # Try to find the club by the email provided in the form.
-        club = [club for club in clubs if club['email'] == request.form['email']][0]
-    except IndexError:
-        # If no club is found, flash an error message and redirect to the index.
-        flash('Sorry, that email wasn\'t found.')
+    # Define the route for showing summary after a POST request.
+    @app.route('/showSummary', methods=['POST'])
+    def showSummary():
+        try:
+            # Try to find the club by the email provided in the form.
+            club = [club for club in clubs if club['email'] == request.form['email']][0]
+        except IndexError:
+            # If no club is found, flash an error message and redirect to the index.
+            flash('Sorry, that email wasn\'t found.')
+            return redirect(url_for('index'))
+        # If a club is found, render the welcome page with the club's and competitions' details.
+        return render_template('welcome.html', club=club, competitions=competitions)
+
+    # Define the route for booking.
+    @app.route('/book/<competition>/<club>')
+    def book(competition, club):
+        try:
+            # Find club and competition by name, raise IndexError if not found.
+            foundClub = [c for c in clubs if c['name'] == club][0]
+            foundCompetition = [c for c in competitions if c['name'] == competition][0]
+        except IndexError:
+            # If not found, flash an error message and redirect.
+            flash('Something went wrong - please try again.')
+            return redirect(url_for('index'))
+        # If both are found, render the booking page with their details.
+        return render_template('booking.html', club=foundClub, competition=foundCompetition)
+
+    # Define the route for purchasing places.
+    @app.route('/purchasePlaces', methods=['POST'])
+    def purchasePlaces():
+        try:
+            # Find competition and club by name from form data.
+            competition = [c for c in competitions if c['name'] == request.form['competition']][0]
+            club = [c for c in clubs if c['name'] == request.form['club']][0]
+        except IndexError:
+            # If not found, flash an error message and redirect.
+            flash('Something went wrong - booking could not be completed.')
+            return redirect(url_for('index'))
+        # Get the number of places required from form data.
+        placesRequired = int(request.form['places'])
+        # Subtract the required places from competition's available places.
+        competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
+        # Show success message and redirect back to the welcome page with updated data.
+        flash('Great-booking complete!')
+        return render_template('welcome.html', club=club, competitions=competitions)
+
+    # Define the route for logout.
+    @app.route('/logout')
+    def logout():
+        # Redirect to the index page.
         return redirect(url_for('index'))
+<<<<<<< HEAD
     # If a club is found, render the welcome page with the club's and competitions' details.
     return render_template('welcome.html', club=club, competitions=competitions)
 
@@ -100,3 +143,5 @@ def purchasePlaces():
 def logout():
     # Redirect to the index page.
     return redirect(url_for('index'))
+=======
+>>>>>>> bug-fix-#1

@@ -73,11 +73,25 @@ def purchasePlaces():
         # If not found, flash an error message and redirect.
         flash('Something went wrong - booking could not be completed.')
         return redirect(url_for('index'))
-    # Get the number of places required from form data.
-    placesRequired = int(request.form['places'])
-    # Subtract the required places from competition's available places.
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
-    # Show success message and redirect back to the welcome page with updated data.
+
+    placesRequired = int(request.form['places'])  # Number of places requested.
+    placesAvailable = int(competition['numberOfPlaces'])  # Available places in the competition.
+    clubPoints = int(club['points'])  # Current points of the club.
+
+    # Check if the club has enough points (assuming 1 place = 3 points).
+    if placesRequired * 3 > clubPoints:
+        flash('Not enough points')
+        return redirect(url_for('book', competition=competition['name'], club=club['name']))
+
+    # Check if there are enough places available in the competition.
+    if placesRequired > placesAvailable:
+        flash('Not enough places available')
+        return redirect(url_for('book', competition=competition['name'], club=club['name']))
+
+    # Update competition places and club points.
+    competition['numberOfPlaces'] = str(placesAvailable - placesRequired)
+    club['points'] = str(clubPoints - (placesRequired * 3))
+
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
 

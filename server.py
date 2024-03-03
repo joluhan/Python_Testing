@@ -109,3 +109,8 @@ def create_app(test_config=None):
         # Redirect to the index page.
         return redirect(url_for('index'))
 
+    return app
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run(debug=True)

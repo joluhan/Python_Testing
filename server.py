@@ -82,6 +82,13 @@ def create_app(test_config=None):
         # Calculate the cost of the requested places.
         cost = placesRequired * 3  # Assuming 1 place costs 3 points.
 
+        # Check if the number of places required exceeds the maximum allowed booking limit of 12 places.
+        if placesRequired > 12:
+            # If it does, flash an error message to inform the user of the limit.
+            flash('Cannot book more than 12 places.')
+            # Then redirect the user back to the booking page to correct their input.
+            return redirect(url_for('book', competition=competition['name'], club=club['name']))
+
         # Check if the club has enough points.
         if cost > clubPoints:
             flash('Not enough points to book the required number of places.')
@@ -106,7 +113,6 @@ def create_app(test_config=None):
 
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
-
 
     # Define the route for logout.
     @app.route('/logout')

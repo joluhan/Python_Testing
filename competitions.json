@@ -9,6 +9,21 @@
             "name": "Fall Classic",
             "date": "2020-10-22 13:30:00",
             "numberOfPlaces": "13"
+        },
+        {
+            "name": "Spring Championship",
+            "date": "2020-10-22 13:30:00",
+            "numberOfPlaces": "13"
+        },
+        {
+            "name": "Summer Showdown",
+            "date": "2027-10-22 13:30:00",
+            "numberOfPlaces": "14"
+        },
+        {
+            "name": "Winter Classic",
+            "date": "2015-10-22 13:30:00",
+            "numberOfPlaces": "14"
         }
     ]
 }

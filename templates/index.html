@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,18 +6,23 @@
 </head>
 <body>
     <h1>Welcome to the GUDLFT Registration Portal!</h1>
-    <!-- Check for any error messages passed by Flask's flash or render_template -->
-    {% if error %}
-        <!-- Display the error message in a list item if it exists -->
-        <li style="color: red;">{{ error }}</li>
-    {% endif %}
-    <!-- Link to view the clubs board -->
-    <a href="{{url_for('display_board')}}">Clubs Board</a>
-    <p>Please enter your secretary email to continue:</p>
-    <!-- Form for submitting the secretary email -->
-    <form action="{{url_for('show_summary')}}" method="post">
+    <!-- Section for displaying any flash messages from the Flask application -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                <!-- Loop through each message and display it in the list -->
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <!-- Prompt for the user to enter their email -->
+    Please enter your secretary email to continue:
+    <!-- Form for email submission -->
+    <form action="showSummary" method="post">
         <label for="email">Email:</label> <!-- Label for the email input field -->
-        <input type="email" name="email" id="email" required> <!-- Email input field, now required to ensure an email is entered -->
+        <input type="email" name="email" id="email"/> <!-- Email input field that validates the input -->
         <button type="submit">Enter</button> <!-- Button to submit the form -->
     </form>
 </body>

@@ -1,6 +1,7 @@
 # Import the json module to work with JSON files and Flask framework components for web application.
 import json
 from flask import Flask, render_template, request, redirect, flash, url_for
+from datetime import datetime
 
 # Function to load clubs from a JSON file.
 def loadClubs():
@@ -54,23 +55,31 @@ def create_app(test_config=None):
     @app.route('/book/<competition>/<club>')
     def book(competition, club):
         try:
-            # Find club and competition by name, raise IndexError if not found.
             foundClub = [c for c in clubs if c['name'] == club][0]
             foundCompetition = [c for c in competitions if c['name'] == competition][0]
+            # Convert competition date to a datetime object.
+            compDate = datetime.strptime(foundCompetition['date'], '%Y-%m-%d %H:%M:%S')
+            # Check if the competition date is in the past.
+            if datetime.now() > compDate:
+                flash('Cannot book a past competition.')
+                return redirect(url_for('index'))
         except IndexError:
-            # If not found, flash an error message and redirect.
             flash('Something went wrong - please try again.')
             return redirect(url_for('index'))
-        # If both are found, render the booking page with their details.
         return render_template('booking.html', club=foundClub, competition=foundCompetition)
 
     # Define the route for purchasing places.
     @app.route('/purchasePlaces', methods=['POST'])
     def purchasePlaces():
         try:
-            # Find competition and club by name from form data.
             competition = [c for c in competitions if c['name'] == request.form['competition']][0]
             club = [c for c in clubs if c['name'] == request.form['club']][0]
+            # Convert competition date to a datetime object.
+            compDate = datetime.strptime(competition['date'], '%Y-%m-%d %H:%M:%S')
+            # Check if the competition date is in the past.
+            if datetime.now() > compDate:
+                flash('Cannot complete booking for a past competition.')
+                return redirect(url_for('index'))
         except IndexError:
             flash('Something went wrong - booking could not be completed.')
             return redirect(url_for('index'))

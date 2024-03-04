@@ -72,16 +72,22 @@ def create_app(test_config=None):
     @app.route('/purchasePlaces', methods=['POST'])
     def purchasePlaces():
         try:
+            # Retrieve the competition from the list using the name provided in the form.
             competition = [c for c in competitions if c['name'] == request.form['competition']][0]
+            # Retrieve the club from the list using the name provided in the form.
             club = [c for c in clubs if c['name'] == request.form['club']][0]
-            # Convert competition date to a datetime object.
+            # Convert the competition's date from a string to a datetime object for comparison.
             compDate = datetime.strptime(competition['date'], '%Y-%m-%d %H:%M:%S')
-            # Check if the competition date is in the past.
+            # Check if the current date and time is past the competition's date and time.
             if datetime.now() > compDate:
+                # Inform the user that booking for a past competition is not possible.
                 flash('Cannot complete booking for a past competition.')
+                # Redirect the user back to the index page.
                 return redirect(url_for('index'))
         except IndexError:
+            # If the competition or club specified does not exist, inform the user.
             flash('Something went wrong - booking could not be completed.')
+            # Redirect the user back to the index page.
             return redirect(url_for('index'))
 
         placesRequired = int(request.form['places'])  # Number of places requested.

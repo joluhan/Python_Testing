@@ -34,8 +34,11 @@ def create_app(test_config=None):
     # Define the route for the index page.
     @app.route('/')
     def index():
-        # Return the index.html template.
-        return render_template('index.html')
+        # Define the route for the main page (index) of the website.
+        clubs = loadClubs()
+        # Call the function 'loadClubs' to retrieve the list of clubs from the JSON file.
+        return render_template('index.html', clubs=clubs)
+        # Render the 'index.html' template, passing in the 'clubs' variable to be accessible in the template.
 
     # Define the route for showing summary after a POST request.
     @app.route('/showSummary', methods=['POST'])

@@ -2,10 +2,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
     <title>GUDLFT Registration</title>
 </head>
 <body>
     <h1>Welcome to the GUDLFT Registration Portal!</h1>
+    <!-- Table displaying the total points of each club -->
+    <h2>Club Points</h2>
+        <table>
+            <tr>
+                <th>Club Name</th>
+                <th>Points</th>
+            </tr>
+            {% for club in clubs %}
+            <tr>
+                <td>{{ club['name'] }}</td>
+                <td>{{ club['points'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
     <!-- Section for displaying any flash messages from the Flask application -->
     {% with messages = get_flashed_messages() %}
         {% if messages %}

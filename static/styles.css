@@ -1,7 +1,16 @@
+html, body {
+    height: 75%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
 table {
-    width: 100%;
+    width: 50%;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
 }
 
 th, td {
@@ -9,4 +18,8 @@ th, td {
     padding: 5px;
     text-align: center; /* Centers text horizontally */
     vertical-align: middle; /* Centers text vertically */
+}
+
+form {
+    margin-top: 20px;
 }

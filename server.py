@@ -48,7 +48,7 @@ def create_app(test_config=None):
             club = [club for club in clubs if club['email'] == request.form['email']][0]
         except IndexError:
             # If no club is found, flash an error message and redirect to the index.
-            flash('Sorry, that email wasn\'t found.')
+            flash('Sorry, that email was not found.')
             return redirect(url_for('index'))
 
         # If a club is found, render the welcome page with the club's and competitions' details.

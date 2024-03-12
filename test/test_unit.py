@@ -19,4 +19,7 @@ def test_show_summary_valid_login(client):
     assert response.status_code == 200
     assert b"Points available:" in response.data
 
-
+def test_show_summary_invalid_login(client):
+    response = client.post('/showSummary', data={'email': 'notarealemail@example.com'}, follow_redirects=True)
+    assert response.status_code == 200
+    assert b"Sorry, that email was not found." in response.data

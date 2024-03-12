@@ -44,8 +44,14 @@
 
 5. Testing
 
-    You are free to use whatever testing framework you like-the main thing is that you can show what tests you are using.
+    For testing, this project uses `pytest`:
+
+    - Make sure your virtual environment is active (`source bin/activate`).
+    - Install `pytest` by running `pip install pytest`.
+    - To run your tests, use the command `python -m pytest` from the root of the project directory.
+
+    <!-- You are free to use whatever testing framework you like-the main thing is that you can show what tests you are using.
 
     We also like to show how well we're testing, so there's a module called 
-    [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) you should add to your project.
+    [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) you should add to your project. -->
 

@@ -52,7 +52,7 @@
 
 6. Coverage Reporting
 
-To measure the coverage of your tests, we use the `coverage` tool. This helps us understand which parts of our code are not being tested and might require additional tests.
+To measure the coverage of the tests, we use the `coverage` tool. This helps us understand which parts of our code are not being tested and might require additional tests.
 
 - First, ensure your virtual environment is activated (`source bin/activate`).
 - Install `coverage` by running `pip install coverage`.
@@ -60,3 +60,37 @@ To measure the coverage of your tests, we use the `coverage` tool. This helps us
 - After the tests have finished, you can view the report by running `coverage report`.
 - For a more detailed report that includes missing lines, run `coverage report -m`.
 - If you prefer to view this in a browser as an HTML page, run `coverage html`. This will generate a `htmlcov` directory with HTML files you can open in your browser.
+
+7. Performance Testing with Locust
+
+To ensure the application can handle the expected load, we use `locust` for performance testing.
+
+**How use locust:**
+
+- First, install `locust` by running `pip install locust`.
+- With the Flask application running, start Locust using `locust`.
+- Open a browser and navigate to `http://localhost:8089` to access the Locust web interface.
+
+When the Locust web interface is open, set the following parameters:
+- Number of users: 6 (to simulate 6 concurrent users)
+- Ramp Up: 1 (users will be started per second)
+- Host: Enter the local address of your Flask application, usually `http://localhost:5000`.
+
+- Click `Start Swarming` to begin the test.
+- Observe the results to ensure your application performs well under the expected load of 6 concurrent users.
+
+8. Running the Local Flask Server
+
+To run the Gudlift Registration Flask application locally, follow these steps:
+
+- Activate Virtual Environment
+- Set the FLASK_APP Environment Variable:
+
+   Flask uses the `FLASK_APP` environment variable to locate the application. Set this variable to your main application file (usually `server.py`):
+
+   - On Linux/MacOS:`export FLASK_APP=server.py`
+   - On Windows:`set FLASK_APP=server.py`
+
+- Run the Flask Application**
+
+   With the environment variable set, you can start the Flask development server with the following command:`Flask run`

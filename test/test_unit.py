@@ -59,3 +59,7 @@ def test_purchase_places_insufficient_points(client):
     
     assert response.status_code == 200
     assert b"Not enough points to book the required number of places." in response.data
+
+def test_logout_route(client):
+    response = client.get('/logout')
+    assert response.status_code == 302  # Expect a redirect to the index page

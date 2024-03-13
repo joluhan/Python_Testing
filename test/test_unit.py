@@ -23,3 +23,13 @@ def test_show_summary_invalid_login(client):
     response = client.post('/showSummary', data={'email': 'notarealemail@example.com'}, follow_redirects=True)
     assert response.status_code == 200
     assert b"Sorry, that email was not found." in response.data
+
+def test_book_past_competition(client):
+    # Use the 'Winter Classic' competition and 'Test Club'
+    response = client.get('/book/Winter Classic/Test Club', follow_redirects=False)
+    assert response.status_code == 302  # Expect a redirect to the index page
+
+    with client.session_transaction() as sess:
+        flashes = sess.get('_flashes', [])
+        # Check if the specific message is in the list of flash messages
+        assert any('Cannot book a past competition.' in message for category, message in flashes)

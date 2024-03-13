@@ -39,3 +39,13 @@ def test_book_valid_competition(client):
     response = client.get('/book/Summer Showdown/Test Club', follow_redirects=False)
     assert response.status_code == 200
     assert 'Book</button>' in response.data.decode('utf-8')
+
+def test_purchase_places_success(client):
+    # Simulate a scenario where booking is successful.
+    response = client.post('/purchasePlaces', data={
+        'competition': 'Summer Showdown',
+        'club': 'Test Club',
+        'places': '1'
+    })
+    assert response.status_code == 200
+    assert b"Great-booking complete!" in response.data

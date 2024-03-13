@@ -33,3 +33,9 @@ def test_book_past_competition(client):
         flashes = sess.get('_flashes', [])
         # Check if the specific message is in the list of flash messages
         assert any('Cannot book a past competition.' in message for category, message in flashes)
+
+def test_book_valid_competition(client):
+    # Using "Summer Showdown" from competition.json and "Test Club" as valid club name in clubs.json
+    response = client.get('/book/Summer Showdown/Test Club', follow_redirects=False)
+    assert response.status_code == 200
+    assert 'Book</button>' in response.data.decode('utf-8')

@@ -50,8 +50,13 @@
     - Install `pytest` by running `pip install pytest`.
     - To run your tests, use the command `python -m pytest` from the root of the project directory.
 
-    <!-- You are free to use whatever testing framework you like-the main thing is that you can show what tests you are using.
+6. Coverage Reporting
 
-    We also like to show how well we're testing, so there's a module called 
-    [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) you should add to your project. -->
+To measure the coverage of your tests, we use the `coverage` tool. This helps us understand which parts of our code are not being tested and might require additional tests.
 
+- First, ensure your virtual environment is activated (`source bin/activate`).
+- Install `coverage` by running `pip install coverage`.
+- To start measuring coverage, run your tests with coverage by using the command `coverage run -m pytest`.
+- After the tests have finished, you can view the report by running `coverage report`.
+- For a more detailed report that includes missing lines, run `coverage report -m`.
+- If you prefer to view this in a browser as an HTML page, run `coverage html`. This will generate a `htmlcov` directory with HTML files you can open in your browser.

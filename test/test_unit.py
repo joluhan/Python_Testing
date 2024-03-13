@@ -49,3 +49,13 @@ def test_purchase_places_success(client):
     })
     assert response.status_code == 200
     assert b"Great-booking complete!" in response.data
+
+def test_purchase_places_insufficient_points(client):
+    response = client.post('/purchasePlaces', data={
+        'competition': 'Summer Showdown',
+        'club': 'Test Club',
+        'places': '10'
+    }, follow_redirects=True)
+    
+    assert response.status_code == 200
+    assert b"Not enough points to book the required number of places." in response.data

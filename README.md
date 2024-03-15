@@ -88,8 +88,8 @@ To run the Gudlift Registration Flask application locally, follow these steps:
 
    Flask uses the `FLASK_APP` environment variable to locate the application. Set this variable to your main application file (usually `server.py`):
 
-   - On Linux/MacOS:`export FLASK_APP=server.py`
-   - On Windows:`set FLASK_APP=server.py`
+   - On Linux/MacOS:`export FLASK_APP=server:create_app`
+   - On Windows:`set FLASK_APP=server:create_app`
 
 - Run the Flask Application**
 

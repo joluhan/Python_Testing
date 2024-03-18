@@ -141,5 +141,5 @@ def create_app(test_config=None):
     return app
 
 if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True)
+    app = create_app() # Create the application using the factory function.
+    app.run(debug=True) # Run the application in debug mode.

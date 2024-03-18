@@ -49,6 +49,7 @@
     - Make sure your virtual environment is active (`source bin/activate`).
     - Install `pytest` by running `pip install pytest`.
     - To run your tests, use the command `python -m pytest` from the root of the project directory.
+    - If you prefer to view this in a browser as an HTML page, run the command `pytest --html=test/test_report.html`
 
 6. Coverage Reporting
 

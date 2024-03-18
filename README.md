@@ -1,97 +1,66 @@
-# gudlift-registration
+# Gudlift Registration
 
-1. Why
+## 1. Why
 
+This project serves as a Proof of Concept (POC) to demonstrate a lightweight version of our competition booking platform. The goal is to keep the implementation minimalistic, focusing on core functionalities while iterating based on user feedback.
 
-    This is a proof of concept (POC) project to show a light-weight version of our competition booking platform. The aim is the keep things as light as possible, and use feedback from the users to iterate.
+## 2. Getting Started
 
-2. Getting Started
+### Technologies Used
 
-    This project uses the following technologies:
+- **Python (v3.x+):** The primary programming language for the project.
+- **Flask:** A micro web framework for Python. Unlike Django, which provides many out-of-the-box features, Flask allows for more granular control and minimalism. [Flask Documentation](https://flask.palletsprojects.com/en/1.1.x/)
+- **Virtual Environment:** Ensures package installations do not interfere with the system's Python environment. [Virtual Environment Installation](https://virtualenv.pypa.io/en/stable/installation.html). Before proceeding, please ensure it is installed globally.
 
-    * Python v3.x+
+## 3. Installation
 
-    * [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+Follow these steps to set up the project locally:
 
-        Whereas Django does a lot of things for us out of the box, Flask allows us to add only what we need. 
-     
+1. **Set Up Virtual Environment:** In the project directory, execute `virtualenv .` to create a Python virtual environment.
+2. **Activate Virtual Environment:** Use `source bin/activate` or `source env/Scripts/activate` to activate the virtual environment. Your command prompt should now reflect the environment's name. Use `deactivate` to exit.
+3. **Install Dependencies:** Run `pip install -r requirements.txt` to install necessary packages in one go. If you add a new package, update `requirements.txt` with `pip freeze > requirements.txt`.
+4. **Set Environment Variable:** Flask requires setting an environment variable to the main application file, typically `server.py`. Refer to [Flask Quickstart](https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application) for details.
+5. **Run the Application:** Execute `flask run` or `python -m flask run` to start the app. Your browser should be able to access it through the provided address.
 
-    * [Virtual environment](https://virtualenv.pypa.io/en/stable/installation.html)
+## 4. Current Setup
 
-        This ensures you'll be able to install the correct packages without interfering with Python on your machine.
+The application utilizes JSON files as a temporary data store to avoid database dependencies until necessary. Important files include:
+- `competitions.json` - A list of competitions.
+- `clubs.json` - Information on clubs, including accepted email addresses for login.
 
-        Before you begin, please ensure you have this installed globally. 
+## 5. Testing
 
+Testing is conducted with `pytest`:
 
-3. Installation
+- Ensure the virtual environment is active.
+- Install `pytest` with `pip install pytest`.
+- Run tests using `python -m pytest`.
+- For HTML reports, `pytest --html=test/test_report.html`.
 
-    - After cloning, change into the directory and type <code>virtualenv .</code>. This will then set up a a virtual python environment within that directory.
+## 6. Coverage Reporting
 
-    - Next, type <code>source bin/activate</code>. You should see that your command prompt has changed to the name of the folder. This means that you can install packages in here without affecting affecting files outside. To deactivate, type <code>deactivate</code>
+We use the `coverage` tool for test coverage analysis:
 
-    - Rather than hunting around for the packages you need, you can install in one step. Type <code>pip install -r requirements.txt</code>. This will install all the packages listed in the respective file. If you install a package, make sure others know by updating the requirements.txt file. An easy way to do this is <code>pip freeze > requirements.txt</code>
+- Activate the virtual environment.
+- Install `coverage` with `pip install coverage`.
+- Execute tests with `coverage run -m pytest`.
+- View the report with `coverage report`. For detailed insights, including missing lines, add `-m`.
+- For an HTML report, `coverage html`.
 
-    - Flask requires that you set an environmental variable to the python file. However you do that, you'll want to set the file to be <code>server.py</code>. Check [here](https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application) for more details
+## 7. Performance Testing with Locust
 
-    - You should now be ready to test the application. In the directory, type either <code>flask run</code> or <code>python -m flask run</code>. The app should respond with an address you should be able to go to using your browser.
+`Locust` is used for load testing:
 
-4. Current Setup
+- Install `locust` (`pip install locust`).
+- Start the application and then `locust`.
+- Visit `http://localhost:8089` for the Locust interface.
+- Configure test parameters: 6 users, 1 ramp-up and target `http://localhost:5000`.
+- Begin the test and monitor performance.
 
-    The app is powered by [JSON files](https://www.tutorialspoint.com/json/json_quick_guide.htm). This is to get around having a DB until we actually need one. The main ones are:
-     
-    * competitions.json - list of competitions
-    * clubs.json - list of clubs with relevant information. You can look here to see what email addresses the app will accept for login.
+## 8. Running the Local Flask Server
 
-5. Testing
+Steps to run the Flask application locally:
 
-    For testing, this project uses `pytest`:
-
-    - Make sure your virtual environment is active (`source bin/activate`).
-    - Install `pytest` by running `pip install pytest`.
-    - To run your tests, use the command `python -m pytest` from the root of the project directory.
-    - If you prefer to view this in a browser as an HTML page, run the command `pytest --html=test/test_report.html`
-
-6. Coverage Reporting
-
-To measure the coverage of the tests, we use the `coverage` tool. This helps us understand which parts of our code are not being tested and might require additional tests.
-
-- First, ensure your virtual environment is activated (`source bin/activate`).
-- Install `coverage` by running `pip install coverage`.
-- To start measuring coverage, run your tests with coverage by using the command `coverage run -m pytest`.
-- After the tests have finished, you can view the report by running `coverage report`.
-- For a more detailed report that includes missing lines, run `coverage report -m`.
-- If you prefer to view this in a browser as an HTML page, run `coverage html`. This will generate a `htmlcov` directory with HTML files you can open in your browser.
-
-7. Performance Testing with Locust
-
-To ensure the application can handle the expected load, we use `locust` for performance testing.
-
-**How use locust:**
-
-- First, install `locust` by running `pip install locust`.
-- With the Flask application running, start Locust using `locust`.
-- Open a browser and navigate to `http://localhost:8089` to access the Locust web interface.
-
-When the Locust web interface is open, set the following parameters:
-- Number of users: 6 (to simulate 6 concurrent users)
-- Ramp Up: 1 (users will be started per second)
-- Host: Enter the local address of your Flask application, usually `http://localhost:5000`.
-
-- Click `Start Swarming` to begin the test.
-- Observe the results to ensure your application performs well under the expected load of 6 concurrent users.
-
-8. Running the Local Flask Server
-
-To run the Gudlift Registration Flask application locally, follow these steps:
-
-- Activate Virtual Environment
-- Set the FLASK_APP Environment Variable:
-
-   Flask uses the `FLASK_APP` environment variable to locate the application. Set this variable to your main application file (usually `server.py`):
-
-   - On Linux/MacOS:`export FLASK_APP=server:create_app`
-   - On Windows:`set FLASK_APP=server:create_app`
-
-- Run the Flask Application**
-
-   With the environment variable set, you can start the Flask development server with the following command:`Flask run`
+- **Activate Virtual Environment**
+- **Set the FLASK_APP Environment Variable:** Use `export FLASK_APP=server:create_app` (Linux/MacOS) or `set FLASK_APP=server:create_app` (Windows).
+- **Run the Flask Application:** Start the server with `Flask run`.

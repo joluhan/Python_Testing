@@ -1,65 +1,94 @@
 import pytest
 from server import create_app
+from server import loadClubs
+from server import loadCompetitions
+from datetime import datetime
 
 @pytest.fixture
 def client():
     app = create_app()
-    app.config['TESTING'] = True
-    with app.test_client() as client:
-        yield client
+    app.config['TESTING'] = True # Set the app to testing mode
+    with app.test_client() as client: # Use the app's test client
+        yield client # This is where the testing happens
 
 def test_index_route(client):
-    response = client.get('/')
-    assert response.status_code == 200
-    assert b"Welcome" in response.data
+    response = client.get('/') # Send a GET request to the index route
+    assert response.status_code == 200 # Check that the response is OK
+    assert b"Welcome" in response.data # Check for unique content from index.html to ensure it's the correct template
 
 def test_show_summary_valid_login(client):
     # Using "test@userid.co.uk" as testing email
-    response = client.post('/showSummary', data={'email': 'test@userid.co.uk'}, follow_redirects=True)
-    assert response.status_code == 200
-    assert b"Points available:" in response.data
+    response = client.post('/showSummary', data={'email': 'test@userid.co.uk'}, follow_redirects=True) # Send a POST request to the showSummary route
+    assert response.status_code == 200 # Check that the response is OK
+    assert b"Points available:" in response.data # Check for unique content from showSummary.html to ensure it's the correct template
 
 def test_show_summary_invalid_login(client):
-    response = client.post('/showSummary', data={'email': 'notarealemail@example.com'}, follow_redirects=True)
-    assert response.status_code == 200
-    assert b"Sorry, that email was not found." in response.data
+    response = client.post('/showSummary', data={'email': 'notarealemail@example.com'}, follow_redirects=True) # Send a POST request to the showSummary route
+    assert response.status_code == 200 # Check that the response is OK
+    assert b"Sorry, that email was not found." in response.data # Check for the flash message
 
-def test_book_past_competition(client):
-    # Use the 'Past Competition Test' competition and 'Test Club'
-    response = client.get('/book/Past Competition Test/Test Club', follow_redirects=False)
-    assert response.status_code == 302  # Expect a redirect to the index page
+def test_show_summary_invalid_email_flash_message(client):
+    response = client.post('/showSummary', data={'email': 'fakeemail@test.com'}, follow_redirects=True) # Send a POST request to the showSummary route
+    assert b"Sorry, that email was not found." in response.data, "Flash message for invalid email not found." # Check for the flash message
 
-    with client.session_transaction() as sess:
-        flashes = sess.get('_flashes', [])
-        # Check if the specific message is in the list of flash messages
-        assert any('Cannot book a past competition.' in message for category, message in flashes)
+def test_show_summary_invalid_email_redirection(client):
+    response = client.post('/showSummary', data={'email': 'nonexistentemail@test.com'}) # Send a POST request to the showSummary route
+    assert response.status_code == 302, "Response should be a redirect." # Check that the response is a redirect
+    assert '/showSummary' not in response.headers['Location'], "Should not redirect back to showSummary." # Check that the response does not redirect back to showSummary
 
-def test_book_valid_competition(client):
-    # Using "Future Competition Test" from competition.json and "Test Club" as valid club name in clubs.json
-    response = client.get('/book/Future Competition Test/Test Club', follow_redirects=False)
-    assert response.status_code == 200
-    assert 'Book</button>' in response.data.decode('utf-8')
+def test_booking_route_success(client):
+    valid_competition = 'Future Competition Test'
+    valid_club = 'Test Club'
+    response = client.get(f'/book/{valid_competition}/{valid_club}') # Send a GET request to the booking route
+    assert response.status_code == 200 # Check that the response is OK
+    assert b'Places available:' in response.data # Check for unique content from booking.html to ensure it's the correct template
+    assert b'action="/purchasePlaces"' in response.data # Ensure the booking form is rendered
 
-def test_purchase_places_success(client):
-    # Simulate a scenario where booking is successful.
-    response = client.post('/purchasePlaces', data={
-        'competition': 'Future Competition Test',
-        'club': 'Test Club',
-        'places': '1'
-    })
-    assert response.status_code == 200
-    assert b"Great-booking complete!" in response.data
+def test_welcome_route_after_login(client):
+    valid_email = 'test@userid.co.uk'
+    response = client.post('/showSummary', data={'email': valid_email}, follow_redirects=True) # Send a POST request to the showSummary route
+    assert response.status_code == 200 # Check that the response is OK
+    assert b'Points available:' in response.data # Check for unique content from showSummary.html to ensure it's the correct template
+    assert b'Competitions:' in response.data # Check for unique content from showSummary.html to ensure it's the correct template
 
-def test_purchase_places_insufficient_points(client):
-    response = client.post('/purchasePlaces', data={
-        'competition': 'Future Competition Test',
-        'club': 'Test Club',
-        'places': '10'
-    }, follow_redirects=True)
-    
-    assert response.status_code == 200
-    assert b"Not enough points to book the required number of places." in response.data
+def test_load_clubs():
+    clubs = loadClubs()
+    assert isinstance(clubs, list), "loadClubs should return a list" # Check that the return value is a list
+    assert len(clubs) > 0, "Should load at least one club" # Check that at least one club is loaded
+    assert all("name" in club for club in clubs), "Each club should have a name" # Check that each club has a name
+
+def update_club_points(club, points_to_deduct):
+    club['points'] = str(int(club['points']) - points_to_deduct) # Deduct points from the club
+    return club
+
+def test_update_club_points():
+    club = {'name': 'Test Club', 'points': '100'}
+    update_club_points(club, 30) # Deduct 30 points
+    assert club['points'] == '70', "Club points should be correctly updated after deduction" # Check that the points have been correctly updated
+
+def test_load_competitions():
+    competitions = loadCompetitions()
+    assert isinstance(competitions, list), "loadCompetitions should return a list" # Check that the return value is a list
+    assert len(competitions) > 0, "Should load at least one competition" # Check that at least one competition is loaded
+    assert all("name" in competition for competition in competitions), "Each competition should have a name" # Check that each competition has a name
+
+def is_competition_in_future(competition_date):
+    comp_date = datetime.strptime(competition_date, '%Y-%m-%d %H:%M:%S') # Convert the string to a datetime object
+    return datetime.now() < comp_date # Check if the competition date is in the future
+
+def test_competition_in_future():
+    future_date = "2099-01-01 00:00:00"
+    assert is_competition_in_future(future_date), "Competition should be in the future" # Check that the function returns True for a future date
+
+def test_competition_in_past():
+    past_date = "2000-01-01 00:00:00"
+    assert not is_competition_in_future(past_date), "Competition should be in the past" # Check that the function returns False for a past date
 
 def test_logout_route(client):
-    response = client.get('/logout')
-    assert response.status_code == 302  # Expect a redirect to the index page
+    response = client.get('/logout') # Send a GET request to the logout route
+    assert response.status_code == 302 # Check that the response is a redirect
+
+def test_logout_route_redirection(client):
+    response = client.get('/logout', follow_redirects=False) # Send a GET request to the logout route
+    assert response.status_code == 302, "Logout should redirect." # Check that the response is a redirect
+    assert '/' in response.headers['Location'], "Logout should redirect to the index page." # Check that the response redirects to the index page

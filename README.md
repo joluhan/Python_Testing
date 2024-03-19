@@ -1,5 +1,15 @@
 # Gudlift Registration
 
+## Table of Contents
+1. [Why](#1-why)
+2. [Getting Started](#2-getting-started)
+3. [Installation](#3-installation)
+4. [Current Setup](#4-current-setup)
+5. [Testing](#5-testing)
+6. [Coverage Reporting](#6-coverage-reporting)
+7. [Performance Testing with Locust](#7-performance-testing-with-locust)
+8. [Running the Local Flask Server](#8-running-the-local-flask-server)
+
 ## 1. Why
 
 This project serves as a Proof of Concept (POC) to demonstrate a lightweight version of our competition booking platform. The goal is to keep the implementation minimalistic, focusing on core functionalities while iterating based on user feedback.

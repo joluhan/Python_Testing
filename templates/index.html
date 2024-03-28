@@ -2,15 +2,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <title>GUDLFT Registration</title>
 </head>
 <body>
     <h1>Welcome to the GUDLFT Registration Portal!</h1>
+    <!-- Table displaying the total points of each club -->
+    <h2>Club Points</h2>
+        <table>
+            <tr>
+                <th>Club Name</th>
+                <th>Points</th>
+            </tr>
+            {% for club in clubs %}
+            <tr>
+                <td>{{ club['name'] }}</td>
+                <td>{{ club['points'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    <!-- Section for displaying any flash messages from the Flask application -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                <!-- Loop through each message and display it in the list -->
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <!-- Prompt for the user to enter their email -->
     Please enter your secretary email to continue:
+    <!-- Form for email submission -->
     <form action="showSummary" method="post">
-        <label for="email">Email:</label>
-        <input type="email" name="email" id=""/>
-        <button type="submit">Enter</button>
+        <label for="email">Email:</label> <!-- Label for the email input field -->
+        <input type="email" name="email" id="email"/> <!-- Email input field that validates the input -->
+        <button type="submit">Enter</button> <!-- Button to submit the form -->
     </form>
 </body>
 </html>
